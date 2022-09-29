@@ -34,10 +34,10 @@ sudo mkdir -p "/etc/nginx/sites-available/subprojects"
 Copy the `subproject.conf` file to the newly created directory for each subproject. Rename the file as the subproject name you wish to serve. Subproject directory name should match project name inside `/var/www`.
 
 ```bash
-sudo curl https://raw.githubusercontent.com/rahulhaque/laravel-nginx-subproject/master/subproject.conf -o /etc/nginx/sites-available/subprojects/app-one
+sudo curl https://raw.githubusercontent.com/rahulhaque/laravel-nginx-subproject/master/subproject.conf -o /etc/nginx/sites-available/subprojects/<app-name>
 
 # Replace the namespace with your subproject name
-sudo sed -i 's/:subproject_name/app-one/' /etc/nginx/sites-available/subprojects/app-one
+sudo sed -i 's/:subproject_name/<app-name>/' /etc/nginx/sites-available/subprojects/<app-name>
 ```
 
 Open the newly generated configuration file `app-one` and change the PHP version if required.
@@ -46,7 +46,7 @@ Open the newly generated configuration file `app-one` and change the PHP version
 
 ```bash
 # Enable new configuration
-sudo ln -s /etc/nginx/sites-available/<your-domain-name> /etc/nginx/sites-enabled/<your-domain-name>
+sudo ln -s /etc/nginx/sites-available/<app-name> /etc/nginx/sites-enabled/<app-name>
 
 # Check if nginx configuration is correct
 sudo nginx -t
@@ -55,7 +55,7 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-Now, go to `http://<your-domain-name>/app-one` to see your app running.
+Now, go to `http://<your-domain-name>/<app-name>` to see your app running.
 
 ## References
 
