@@ -11,51 +11,48 @@ Run multiple Laravel application with multiple PHP versions under one domain wit
 
 ### 1. Copy Projects
 
-Copy the project directories inside `/var/www` directory. Let's assume there is a project with the directory name of `app-one`. We will configure the server for `/var/www/app-one`.
+Copy the project directory to `/var/www`.
 
-### 2. Set Base Configuration (Once)
+### 2. Base Configuration (Once)
 
-Copy the `default.conf` file to `/etc/nginx/sites-available` directory and rename it as same as your domain name. The below command will do both for you.
+Run the following commands by replacing `<domain-name>` to your domain name and `<php-version>` to installed PHP version. If domain is not available, use `_` instead. However, domain name is required for setting up HTTPS/SSL.
 
 ```bash
-sudo curl https://raw.githubusercontent.com/rahulhaque/laravel-nginx-subproject/master/default.conf -o /etc/nginx/sites-available/<your-domain-name>
+sudo curl https://raw.githubusercontent.com/rahulhaque/laravel-nginx-subproject/master/default.conf -o /etc/nginx/sites-available/<domain-name>
+
+sudo sed -i 's/:server_name/<domain-name>/g;s/:php_version/<php-version>/g' /etc/nginx/sites-available/<domain-name>
 ```
 
-Open the configuration file and change the `server_name` to your domain name (required for setting up SSL/HTTPS) and PHP version to your desired one.
-
-### 3. Set Subproject Configuration (For each subproject)
-
-Create the subproject configuration directory inside `/etc/nginx/sites-available`.
+Create `subproject` directory in `/etc/nginx/sites-available`. This is where all the subproject configuration will live.
 
 ```bash
 sudo mkdir -p "/etc/nginx/sites-available/subprojects"
 ```
 
-Copy the `subproject.conf` file to the newly created directory for each subproject. Rename the file as the subproject name you wish to serve. Subproject directory name should match project name inside `/var/www`.
+### 3. Subproject Configuration
+
+For each subproject, run the following commands by replacing `<app-name>` to subproject name and `<php-version>` to installed PHP version.
 
 ```bash
 sudo curl https://raw.githubusercontent.com/rahulhaque/laravel-nginx-subproject/master/subproject.conf -o /etc/nginx/sites-available/subprojects/<app-name>
 
-# Replace the namespace with your subproject name
-sudo sed -i 's/:subproject_name/<app-name>/' /etc/nginx/sites-available/subprojects/<app-name>
+sudo sed -i 's/:subproject_name/<app-name>/g;s/:php_version/<php-version>/g' /etc/nginx/sites-available/subprojects/<app-name>
 ```
-
-Open the newly generated configuration file `app-one` and change the PHP version if required.
 
 ### 4. Go Live
 
 ```bash
 # Enable new configuration
-sudo ln -s /etc/nginx/sites-available/<app-name> /etc/nginx/sites-enabled/<app-name>
+sudo ln -s /etc/nginx/sites-available/<domain-name> /etc/nginx/sites-enabled/<domain-name>
 
-# Check if nginx configuration is correct
+# Verify nginx configuration
 sudo nginx -t
 
 # Restart nginx
 sudo systemctl restart nginx
 ```
 
-Now, go to `http://<your-domain-name>/<app-name>` to see your app running.
+Now, go to `http://<domain-name>/<app-name>` to see your app running.
 
 ## References
 
